@@ -84,7 +84,7 @@
 										<div class="checkbox-item">
 											<form>
 												<div v-for="category in filterList.categories" class="form-group">
-													<input type="checkbox" :value="category.id" :id="`category_${category.id}`" v-model="categories">
+												<input type="checkbox" :value="category.id" :id="`category_${category.id}`" v-model="categories">
 													<label :for="`category_${category.id}`">{{ category.title }}</label>
 												</div>
 											</form>
@@ -142,12 +142,14 @@
 										<div class="right-box justify-content-md-between justify-content-center">
 											<div class="short-by">
 												<div class="select-box">
-													<select class="wide" id="order">
-														<option value="title|asc">Alphabetically, A-Z</option>
-														<option value="title|desc">Alphabetically, Z-A</option>
-														<option value="price|asc">Price, low to high</option>
-														<option value="price|desc">Price, high to low</option>
-													</select>
+													<form>
+														<select id="order" style="border: solid 1px lightgray;" v-model="order" @change="addOrder($event)">
+															<option value="title|asc">Alphabetically, A-Z</option>
+															<option value="title|desc">Alphabetically, Z-A</option>
+															<option value="price|asc">Price, low to high</option>
+															<option value="price|desc">Price, high to low</option>
+														</select>
+													</form>
 												</div>
 											</div>
 											<div class="product-view-style d-flex justify-content-md-between justify-content-center">
@@ -336,6 +338,7 @@ export default {
 			colors: [],
 			tags: [],
 			prices: [],
+			order: 'title|asc',
 		}
 	},
 	methods: {
@@ -389,6 +392,10 @@ export default {
 				});
 			}
 		},
+		addOrder(event) {
+			this.order = event.target.value;
+			this.filterProducts();
+		},
 		filterClear() {
 			this.categories = [];
 			this.colors = [];
@@ -406,11 +413,12 @@ export default {
 				'categories': this.categories,
 				'colors': this.colors,
 				'tags': this.tags,
-				'prices': this.prices
+				'prices': this.prices,
+				'order': this.order,
 			})
 			.then(res => {
 				this.products = res.data.data;
-				console.log(res);
+				//console.log(res);
 			})
 			.finally(v => {
 				$(document).trigger('init');
@@ -419,7 +427,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-
-</style>

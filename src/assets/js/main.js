@@ -829,14 +829,12 @@ jQuery(function ($) {
 	  };
 
 	  /****======  niceSelect  ======*******/
-	  if ($("select").length) {
+	  /*if ($("select").length) {
 	    $("select").niceSelect();
-	  };
-
+	  };*/
 
 	  /****======  Wow  ======*******/
 	  new WOW().init();
-
 
 	  /****====== Magnific popup_link  ======*******/
 	  if ($(".popup_link").length) {
