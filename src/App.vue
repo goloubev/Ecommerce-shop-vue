@@ -17,30 +17,17 @@
 								<div class="row g-0 holder">
 									<div class="col-12">
 										<div class="some-info">
-											<p class="d-flex align-items-center">
-												<span class="icon">
-													<i class="flaticon-power"></i>
-												</span> Welcome to Karte Online Shop
-											</p>
 											<div class="right d-flex align-items-center">
-												<div class="language currency"> <select>
-													<option>USD</option>
-													<option value="1">INR</option>
-													<option value="2">BDT</option>
-												</select> </div>
-												<div class="language two"> <select>
-													<option>ENGLISH </option>
-													<option value="4">FRENCH</option>
-												</select> </div> <a href="login.html"> Sign In / Register </a>
+												<a href="login.html"> Sign In / Register </a>
 											</div>
 										</div>
 									</div>
 								</div>
-								<div class="border-one"> </div>
+								<div class="border-one"></div>
 								<div class="row g-0 holder">
 									<div class="col-12">
 										<div class="mega-menu-default mega-menu d-lg-block d-none">
-											<div class=" d-flex align-items-center justify-content-between">
+											<div class="d-flex align-items-center justify-content-between">
 												<nav>
 													<ul class="page-dropdown-menu d-flex align-items-center justify-content-center">
 														<li class="dropdown-list"><router-link to="/"><span>Home</span></router-link></li>
@@ -186,7 +173,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-
-</style>

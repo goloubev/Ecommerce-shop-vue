@@ -1,83 +1,13 @@
 <template>
-	<div>
+	<div v-if="products === null || filterList === null">Loading...</div>
+	<div v-else>
 		<main class="overflow-hidden">
-			<!--Start Breadcrumb Style2-->
-			<div class="breadcrumb-area" style="background-image: url(/src/assets/images/inner-pages/breadcum-bg.png);">
-				<div class="container">
-					<div class="row">
-						<div class="col-xl-12">
-							<div class="breadcrumb-content pb-60 text-center">
-								<h2>Shop grid</h2>
-								<div class="breadcrumb-menu">
-									<ul>
-										<li><a href="index.html"><i class="flaticon-home pe-2"></i>Home</a></li>
-										<li><i class="flaticon-next"></i></li>
-										<li class="active">Shop grid</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--End Breadcrumb Style2-->
-			<!--Start Product Categories One-->
-			<section class="product-categories-one pb-60">
-				<div class="container">
-					<div class="row">
-						<div class="col-xl-12">
-							<div class="product-categories-one__inner">
-								<ul>
-									<li>
-										<a href="javascript:;" class="img-box">
-											<div class="inner">
-												<img src="/src/assets/images/shop/product-categories-v1-img2.png" alt="" />
-											</div>
-										</a>
-										<div class="title">
-											<a href="javascript:;">
-												<h6>Accessories</h6>
-											</a>
-										</div>
-									</li>
-									<li>
-										<a href="javascript:;" class="img-box">
-											<div class="inner">
-												<img src="/src/assets/images/shop/product-categories-v1-img2.png" alt="" />
-											</div>
-										</a>
-										<div class="title">
-											<a href="javascript:;">
-												<h6>Furnitures</h6>
-											</a>
-										</div>
-									</li>
-									<li>
-										<a href="javascript:;" class="img-box">
-											<div class="inner">
-												<img src="/src/assets/images/shop/product-categories-v1-img2.png" alt="" />
-											</div>
-										</a>
-										<div class="title">
-											<a href="javascript:;">
-												<h6>Jewellery</h6>
-											</a>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<!--End Product Categories One-->
 			<!--Start product-grid-->
 			<div class="product-grid pt-60 pb-120">
 				<div class="container">
 					<div class="row gx-4">
 						<div class="col-xl-3 col-lg-4">
-							<div class="shop-grid-sidebar"><button class="remove-sidebar d-lg-none d-block"><i
-								class="flaticon-cross"></i></button>
+							<div class="shop-grid-sidebar">
 								<div class="sidebar-holder">
 									<div v-if="filterList.categories" class="single-sidebar-box mt-30">
 										<h4>Categories</h4>
@@ -189,7 +119,7 @@
 																<!-- :src !!!!! -->
 																<img :src="product.images[0].file_path" alt="" />
 															</a>
-															<a href="javascript:;" class="addcart btn--primary style2">Add to cart</a>
+															<a @click.prevent="addToCart(product.id, true)" href="javascript:;" class="addcart btn--primary style2">Add to cart</a>
 															<div class="products-grid__usefull-links">
 																<ul>
 																	<li>
@@ -267,15 +197,9 @@
 																				<h6>Qty:</h6>
 																				<div class="button-group">
 																					<div class="qtySelector text-center">
-	                                                                                    <span class="decreaseQty">
-		                                                                                    <i class="flaticon-minus"></i>
-	                                                                                    </span>
-																						<input type="number" class="qtyValue" value="1" />
-																						<span class="increaseQty">
-																							<i class="flaticon-plus"></i>
-																						</span>
+																						<input type="number" id="qtyValue" value="1" />
 																					</div>
-																					<button class="btn--primary">
+																					<button @click.prevent="addToCart(popupProduct.id, false)" class="btn--primary">
 																						Add to cart
 																					</button>
 																				</div>
@@ -287,7 +211,9 @@
 														</div>
 														<div class="products-three-single-content text-center">
 															<span>{{ product.category.title }}</span>
-															<h5><a href="javascript:;">{{ product.title }}</a></h5>
+															<h5>
+																<router-link :to="{ name: 'products.show', params: { id: product.id }}">{{ product.title }}</router-link>
+															</h5>
 															<p>
 																<del v-if="product.price_old">{{ product.price_old }} $</del>
 																{{ product.price }} $
@@ -339,9 +265,9 @@
 export default {
 	name: 'Index',
 	mounted() {
-		$(document).trigger('init'),
-		this.getProducts(),
-		this.getFilterList()
+		$(document).trigger('changed');
+		this.getProducts();
+		this.getFilterList();
 	},
 	data() {
 		return {
@@ -369,7 +295,7 @@ export default {
 			.then(res => {
 				this.products = res.data.data;
 				this.pagination = res.data.meta;
-				console.log(res);
+				//console.log(res);
 			})
 			.finally(v => {
 				$(document).trigger('init');
@@ -390,9 +316,6 @@ export default {
 				.then(res => {
 					this.filterList = res.data;
 					//console.log(res);
-				})
-				.finally(v => {
-					$(document).trigger('init');
 				});
 		},
 		addColor(id) {
@@ -433,6 +356,35 @@ export default {
 			this.prices[1] = $('#price_max').val();
 			this.getProducts();
 		},
+		addToCart(id, isSingle) {
+			let cart = localStorage.getItem('cart');
+			let qty = isSingle ? 1 : $('#qtyValue').val(1);
+			$('#qtyValue').val(1);
+
+			let newProduct = [
+				{
+					id: id,
+					qty: Number(qty)
+				}
+			];
+
+			if (!cart) {
+				localStorage.setItem('cart', JSON.stringify(newProduct));
+			}
+			else {
+				cart = JSON.parse(cart);
+
+				cart.forEach(productInCart => {
+					if (productInCart.id === id) {
+						productInCart.qty = Number(productInCart.qty) + Number(qty);
+						newProduct = null;
+					}
+				})
+
+				Array.prototype.push.apply(cart, newProduct);
+				localStorage.setItem('cart', JSON.stringify(cart));
+			}
+		}
 	}
 }
 </script>
