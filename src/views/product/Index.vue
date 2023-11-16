@@ -182,7 +182,7 @@
 									<div class="tab-content" id="pills-tabContent">
 										<div class="tab-pane fade show active" id="pills-grid" role="tabpanel" aria-labelledby="pills-grid-tab">
 											<div class="row">
-												<div v-for="product in products" class="col-xl-4 col-lg-6 col-6">
+												<div v-if="products.length > 0" v-for="product in products" class="col-xl-4 col-lg-6 col-6">
 													<div class="products-three-single w-100 mt-30">
 														<div class="products-three-single-img">
 															<a href="javascript:;" class="d-block">
@@ -300,19 +300,33 @@
 									</div>
 								</div>
 							</div>
-							<!--<div class="row">
+							<div class="row" v-if="pagination.last_page > 1">
 								<div class="col-12 d-flex justify-content-center">
 									<ul class="pagination text-center">
-										<li class="next"><a href="javascript:;"><i class="flaticon-left-arrows" aria-hidden="true"></i></a></li>
-										<li><a href="javascript:;">1</a></li>
-										<li><a href="javascript:;" class="active">2</a></li>
-										<li><a href="javascript:;">3</a></li>
-										<li><a href="javascript:;">...</a></li>
-										<li><a href="javascript:;">10</a></li>
-										<li class="next"><a href="javascript:;"><i class="flaticon-next-1" aria-hidden="true"></i></a></li>
+										<li>
+											<a @click.prevent="getProducts(1)" href="javascript:;">First</a>
+										</li>
+										<li v-if="pagination.current_page != 1">
+											<a @click.prevent="getProducts(pagination.current_page - 1)" href="javascript:;">
+												<i class="flaticon-left-arrow-1" aria-hidden="true"></i>
+											</a>
+										</li>
+										<li v-for="link in pagination.links">
+											<template v-if="Number(link.label) && pagination.current_page - link.label < 3 && pagination.current_page - link.label > -3">
+												<a @click.prevent="getProducts(link.label)" :class="link.active ? 'active' : ''" href="javascript:;">{{ link.label }}</a>
+											</template>
+										</li>
+										<li v-if="pagination.current_page != pagination.last_page">
+											<a @click.prevent="getProducts(pagination.current_page + 1)" href="javascript:;">
+												<i class="flaticon-next-1" aria-hidden="true"></i>
+											</a>
+										</li>
+										<li>
+											<a @click.prevent="getProducts(pagination.last_page)" href="javascript:;">Last</a>
+										</li>
 									</ul>
 								</div>
-							</div>-->
+							</div>
 						</div>
 					</div>
 				</div>
@@ -339,18 +353,27 @@ export default {
 			tags: [],
 			prices: [],
 			order: 'title|asc',
+			pagination: [],
 		}
 	},
 	methods: {
-		getProducts() {
-			this.axios.post('http://ecommerce_shop.local/api/products')
-				.then(res => {
-					this.products = res.data.data;
-					//console.log(res);
-				})
-				.finally(v => {
-					$(document).trigger('init');
-				});
+		getProducts(page = 1) {
+			this.axios.post('http://ecommerce_shop.local/api/products', {
+				'categories': this.categories,
+				'colors': this.colors,
+				'tags': this.tags,
+				'prices': this.prices,
+				'order': this.order,
+				'page': page,
+			})
+			.then(res => {
+				this.products = res.data.data;
+				this.pagination = res.data.meta;
+				console.log(res);
+			})
+			.finally(v => {
+				$(document).trigger('init');
+			});
 		},
 		getProduct(id) {
 			this.axios.get(`http://ecommerce_shop.local/api/products/${id}`)
@@ -408,21 +431,7 @@ export default {
 		filterProducts() {
 			this.prices[0] = $('#price_min').val();
 			this.prices[1] = $('#price_max').val();
-
-			this.axios.post('http://ecommerce_shop.local/api/products', {
-				'categories': this.categories,
-				'colors': this.colors,
-				'tags': this.tags,
-				'prices': this.prices,
-				'order': this.order,
-			})
-			.then(res => {
-				this.products = res.data.data;
-				//console.log(res);
-			})
-			.finally(v => {
-				$(document).trigger('init');
-			});
+			this.getProducts();
 		},
 	}
 }
