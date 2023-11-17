@@ -32,20 +32,30 @@
 													<ul class="page-dropdown-menu d-flex align-items-center justify-content-center">
 														<li class="dropdown-list"><router-link to="/"><span>Home</span></router-link></li>
 														<li class="dropdown-list"><router-link to="/products"><span>Products</span></router-link></li>
+														<li class="dropdown-list"><router-link to="/cart"><span>Cart</span></router-link></li>
 													</ul>
 												</nav>
-
-												<div class="right d-flex align-items-center justify-content-end">
+												<!--<div class="right d-flex align-items-center justify-content-end">
 													<ul class="main-menu__widge-box d-flex align-items-center">
-														<li class="d-lg-block d-none"><a href="my-account.html"><i
-															class="flaticon-user"></i> </a></li>
-														<li class="d-lg-block d-none"><a href="wishlist.html" class="number"><i class="flaticon-heart"></i> <span
-															class="count">(2)</span> </a> </li>
-														<li class="cartm"> <a href="#0" class="number cart-icon"> <i
-															class="flaticon-shopping-cart"></i><span
-															class="count">(5)</span> </a> </li>
+														<li class="d-lg-block d-none">
+															<a href="my-account.html">
+																<i class="flaticon-user"></i>
+															</a>
+														</li>
+														<li class="d-lg-block d-none">
+															<a href="wishlist.html" class="number">
+																<i class="flaticon-heart"></i>
+																<span class="count"></span>
+															</a>
+														</li>
+														<li class="cartm">
+															<router-link :to="{ name: 'cart.show' }" class="number cart-icon">
+																<i class="flaticon-shopping-cart"></i>
+																<span class="count"></span>
+															</router-link>
+														</li>
 													</ul>
-												</div>
+												</div>-->
 											</div>
 										</div>
 									</div>
@@ -121,7 +131,7 @@
 								</div>
 								<div class="footer-newsletter">
 									<p class="text">Enter your email to receive our latest updates about our products & promotions. </p>
-									<form action="#0" class="footer-default__subscrib-form">
+									<form action="javascript:void(0);" class="footer-default__subscrib-form">
 										<div class="footer-input-box">
 											<input type="email" placeholder="Email address" name="email">
 											<button type="submit" class="subscribe_btn"> Subscribe</button>
@@ -153,10 +163,10 @@
 							<p>© 2022 <a href="index.html">Karte.</a> All Rights Reserved.</p>
 						</div>
 						<div class="footer-payment wow fadeInUp animated">
-							<a href="#0"> <img src="/src/assets/images/home-four/method-1.jpg" alt="payment"> </a>
-							<a href="#0"> <img src="/src/assets/images/home-four/method-2.jpg" alt="payment"> </a>
-							<a href="#0"> <img src="/src/assets/images/home-four/method-3.jpg" alt="payment"> </a>
-							<a href="#0"> <img src="/src/assets/images/home-four/method-4.jpg" alt="payment"> </a>
+							<a href="javascript:void(0);"> <img src="/src/assets/images/home-four/method-1.jpg" alt="payment"> </a>
+							<a href="javascript:void(0);"> <img src="/src/assets/images/home-four/method-2.jpg" alt="payment"> </a>
+							<a href="javascript:void(0);"> <img src="/src/assets/images/home-four/method-3.jpg" alt="payment"> </a>
+							<a href="javascript:void(0);"> <img src="/src/assets/images/home-four/method-4.jpg" alt="payment"> </a>
 						</div>
 					</div>
 				</div>

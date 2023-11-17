@@ -24,7 +24,7 @@
 										<h4>Colors</h4>
 										<ul class="color-option">
 											<li v-for="color in filterList.colors">
-												<a href="javascript:;"
+												<a href="javascript:void(0);"
 												   @click.prevent="addColor(color.id)"
 												   :style="{background:color.title}"
 												   class="color-option-single"
@@ -39,7 +39,7 @@
 										<h4>Tags</h4>
 										<ul class="popular-tag">
 											<li v-for="tag in filterList.tags">
-												<a href="javascript:;"
+												<a href="javascript:void(0);"
 												   @click.prevent="addTag(tag.id)"
 												   :class="{'border border-1 border-dark': tags.includes(tag.id)}"
 												>
@@ -115,20 +115,20 @@
 												<div v-if="products.length > 0" v-for="product in products" class="col-xl-4 col-lg-6 col-6">
 													<div class="products-three-single w-100 mt-30">
 														<div class="products-three-single-img">
-															<a href="javascript:;" class="d-block">
+															<router-link :to="{ name: 'products.show', params: { id: product.id }}" class="d-block">
 																<!-- :src !!!!! -->
 																<img :src="product.images[0].file_path" alt="" />
-															</a>
-															<a @click.prevent="addToCart(product.id, true)" href="javascript:;" class="addcart btn--primary style2">Add to cart</a>
+															</router-link>
+															<a @click.prevent="addToCart(product, true)" href="javascript:void(0);" class="addcart btn--primary style2">Add to cart</a>
 															<div class="products-grid__usefull-links">
 																<ul>
 																	<li>
-																		<a href="javascript:;"><i class="flaticon-heart"></i>
+																		<a href="javascript:void(0);"><i class="flaticon-heart"></i>
 																			<span>Wishlist</span>
 																		</a>
 																	</li>
 																	<li>
-																		<a href="javascript:;">
+																		<a href="javascript:void(0);">
 																			<i class="flaticon-left-and-right-arrows"></i>
 																			<span>Compare</span>
 																		</a>
@@ -190,16 +190,22 @@
 																			</div>
 																				<div class="color-varient">
 																					<template v-for="groupProduct in popupProduct.group_products">
-																						<a @click.prevent="getProduct(groupProduct.id)" v-for="color in groupProduct.colors" :style="`background:${color.title};`" href="javascript:;" class="color-name"></a>
+																						<a @click.prevent="getProduct(groupProduct.id)" v-for="color in groupProduct.colors" :style="`background:${color.title};`" href="javascript:void(0);" class="color-name"></a>
 																					</template>
 																				</div>
 																			<div class="add-product">
 																				<h6>Qty:</h6>
 																				<div class="button-group">
 																					<div class="qtySelector text-center">
-																						<input type="number" id="qtyValue" value="1" />
+																						<span @click.prevent="decreaseQty" class="decreaseQty">
+																							<i class="flaticon-minus"></i>
+																						</span>
+																						<input type="number" id="qtyValue" value="1" readonly />
+																						<span @click.prevent="increaseQty" class="increaseQty">
+																							<i class="flaticon-plus"></i>
+																						</span>
 																					</div>
-																					<button @click.prevent="addToCart(popupProduct.id, false)" class="btn--primary">
+																					<button @click.prevent="addToCart(popupProduct, false)" class="btn--primary">
 																						Add to cart
 																					</button>
 																				</div>
@@ -212,7 +218,9 @@
 														<div class="products-three-single-content text-center">
 															<span>{{ product.category.title }}</span>
 															<h5>
-																<router-link :to="{ name: 'products.show', params: { id: product.id }}">{{ product.title }}</router-link>
+																<router-link :to="{ name: 'products.show', params: { id: product.id }}">
+																	{{ product.title }}
+																</router-link>
 															</h5>
 															<p>
 																<del v-if="product.price_old">{{ product.price_old }} $</del>
@@ -230,25 +238,25 @@
 								<div class="col-12 d-flex justify-content-center">
 									<ul class="pagination text-center">
 										<li>
-											<a @click.prevent="getProducts(1)" href="javascript:;">First</a>
+											<a @click.prevent="getProducts(1)" href="javascript:void(0);">First</a>
 										</li>
-										<li v-if="pagination.current_page != 1">
-											<a @click.prevent="getProducts(pagination.current_page - 1)" href="javascript:;">
+										<li v-if="pagination.current_page !== 1">
+											<a @click.prevent="getProducts(pagination.current_page - 1)" href="javascript:void(0);">
 												<i class="flaticon-left-arrow-1" aria-hidden="true"></i>
 											</a>
 										</li>
 										<li v-for="link in pagination.links">
 											<template v-if="Number(link.label) && pagination.current_page - link.label < 3 && pagination.current_page - link.label > -3">
-												<a @click.prevent="getProducts(link.label)" :class="link.active ? 'active' : ''" href="javascript:;">{{ link.label }}</a>
+												<a @click.prevent="getProducts(link.label)" :class="link.active ? 'active' : ''" href="javascript:void(0);">{{ link.label }}</a>
 											</template>
 										</li>
-										<li v-if="pagination.current_page != pagination.last_page">
-											<a @click.prevent="getProducts(pagination.current_page + 1)" href="javascript:;">
+										<li v-if="pagination.current_page !== pagination.last_page">
+											<a @click.prevent="getProducts(pagination.current_page + 1)" href="javascript:void(0);">
 												<i class="flaticon-next-1" aria-hidden="true"></i>
 											</a>
 										</li>
 										<li>
-											<a @click.prevent="getProducts(pagination.last_page)" href="javascript:;">Last</a>
+											<a @click.prevent="getProducts(pagination.last_page)" href="javascript:void(0);">Last</a>
 										</li>
 									</ul>
 								</div>
@@ -283,23 +291,39 @@ export default {
 		}
 	},
 	methods: {
+		decreaseQty() {
+			let newQty = Number($('#qtyValue').val()) - 1;
+
+			if (newQty > 0) {
+				$('#qtyValue').val(newQty);
+			}
+		},
+		increaseQty() {
+			let newQty = Number($('#qtyValue').val()) + 1;
+
+			if (newQty < 100) {
+				$('#qtyValue').val(newQty);
+			}
+		},
 		getProducts(page = 1) {
-			this.axios.post('http://ecommerce_shop.local/api/products', {
+			const data = {
 				'categories': this.categories,
 				'colors': this.colors,
 				'tags': this.tags,
 				'prices': this.prices,
 				'order': this.order,
 				'page': page,
-			})
-			.then(res => {
-				this.products = res.data.data;
-				this.pagination = res.data.meta;
-				//console.log(res);
-			})
-			.finally(v => {
-				$(document).trigger('init');
-			});
+			};
+
+			this.axios.post('http://ecommerce_shop.local/api/products', data)
+				.then(res => {
+					this.products = res.data.data;
+					this.pagination = res.data.meta;
+					//console.log(res);
+				})
+				.finally(v => {
+					$(document).trigger('init');
+				});
 		},
 		getProduct(id) {
 			this.axios.get(`http://ecommerce_shop.local/api/products/${id}`)
@@ -356,15 +380,18 @@ export default {
 			this.prices[1] = $('#price_max').val();
 			this.getProducts();
 		},
-		addToCart(id, isSingle) {
+		addToCart(product, isSingle) {
 			let cart = localStorage.getItem('cart');
-			let qty = isSingle ? 1 : $('#qtyValue').val(1);
+			let qty = isSingle ? 1 : $('#qtyValue').val();
 			$('#qtyValue').val(1);
 
 			let newProduct = [
 				{
-					id: id,
-					qty: Number(qty)
+					id: product.id,
+					image_url: product.images[0].file_path,
+					title: product.title,
+					price: product.price,
+					qty: qty
 				}
 			];
 
@@ -375,7 +402,7 @@ export default {
 				cart = JSON.parse(cart);
 
 				cart.forEach(productInCart => {
-					if (productInCart.id === id) {
+					if (productInCart.id === product.id) {
 						productInCart.qty = Number(productInCart.qty) + Number(qty);
 						newProduct = null;
 					}

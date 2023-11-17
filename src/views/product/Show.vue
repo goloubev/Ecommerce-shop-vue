@@ -52,29 +52,29 @@
 										<h4>Size</h4>
 										<div class="shop-details-top-size-list-box">
 											<ul class="shop-details-top-size-list">
-												<li><a href="javascript:;">XS</a></li>
-												<li><a href="javascript:;">S</a></li>
-												<li><a href="javascript:;">M</a></li>
-												<li><a href="javascript:;">XL</a></li>
+												<li><a href="javascript:void(0);">XS</a></li>
+												<li><a href="javascript:void(0);">S</a></li>
+												<li><a href="javascript:void(0);">M</a></li>
+												<li><a href="javascript:void(0);">XL</a></li>
 											</ul>
 										</div>
 									</div>-->
 									<div class="shop-details-top-color-sky-box">
 										<h4>Color</h4>
 										<ul class="varients">
-											<li> <a href="javascript:;" class="shop-details-top-color-sky-img"
+											<li> <a href="javascript:void(0);" class="shop-details-top-color-sky-img"
 											        data-src="/src/assets/images/shop/products-img1.jpg"> <img
 												src="/src/assets/images/shop/shop-details-top-color-sky-img-1.jpg"
 												alt=""> </a> </li>
-											<li> <a href="javascript:;" class="shop-details-top-color-sky-img"
+											<li> <a href="javascript:void(0);" class="shop-details-top-color-sky-img"
 											        data-src="/src/assets/images/shop/products-img2.jpg"> <img
 												src="/src/assets/images/shop/shop-details-top-color-sky-img-2.jpg"
 												alt=""> </a> </li>
-											<li> <a href="javascript:;" class="shop-details-top-color-sky-img"
+											<li> <a href="javascript:void(0);" class="shop-details-top-color-sky-img"
 											        data-src="/src/assets/images/shop/products-img3.jpg"> <img
 												src="/src/assets/images/shop/shop-details-top-color-sky-img-3.jpg"
 												alt=""> </a> </li>
-											<li> <a href="javascript:;" class="shop-details-top-color-sky-img"
+											<li> <a href="javascript:void(0);" class="shop-details-top-color-sky-img"
 											        data-src="/src/assets/images/shop/products-img4.jpg"> <img
 												src="/src/assets/images/shop/shop-details-top-color-sky-img-4.jpg"
 												alt=""> </a> </li>
@@ -85,7 +85,13 @@
 										<div class="product-quantity-box d-flex align-items-center flex-wrap">
 											<div class="qty mr-2">
 												<div class="qtySelector text-center">
-													<input type="number" id="qtyValue" value="1" />
+													<span @click.prevent="decreaseQty" class="decreaseQty">
+														<i class="flaticon-minus"></i>
+													</span>
+													<input type="number" id="qtyValue" value="1" readonly />
+													<span @click.prevent="increaseQty" class="increaseQty">
+														<i class="flaticon-plus"></i>
+													</span>
 												</div>
 											</div>
 											<!--<div class="product-quantity-check">
@@ -120,6 +126,20 @@ export default {
 		}
 	},
 	methods: {
+		decreaseQty() {
+			let newQty = Number($('#qtyValue').val()) - 1;
+
+			if (newQty > 0) {
+				$('#qtyValue').val(newQty);
+			}
+		},
+		increaseQty() {
+			let newQty = Number($('#qtyValue').val()) + 1;
+
+			if (newQty < 100) {
+				$('#qtyValue').val(newQty);
+			}
+		},
 		getProduct() {
 			this.axios.get(`http://ecommerce_shop.local/api/products/${this.$route.params.id}`)
 				.then(res => {
